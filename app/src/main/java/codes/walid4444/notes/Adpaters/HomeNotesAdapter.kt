@@ -7,9 +7,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.view.animation.ScaleAnimation
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -20,13 +23,15 @@ import codes.walid4444.notes.R
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class HomeNotesAdapter (val context: Context,notes: List<Note>): PagedListAdapter<Note, HomeNotesAdapter.ViewHolder>(
     NoteDiffCallback()){
     var notes: List<Note> = ArrayList()
     var mContext :Context;
+    private val FADE_DURATION = 1000 //FADE_DURATION in milliseconds
 
 
-   init {
+    init {
         this.notes = notes
         this.mContext = context;
    }
@@ -64,6 +69,9 @@ class HomeNotesAdapter (val context: Context,notes: List<Note>): PagedListAdapte
                 note_background_color
             )
         )
+
+        setFadeAnimation(holder.itemView)
+        setScaleAnimation(holder.itemView)
     }
 
     override fun getItemCount(): Int {
@@ -102,5 +110,29 @@ class HomeNotesAdapter (val context: Context,notes: List<Note>): PagedListAdapte
             bundle.putInt("item_id",noteItem!!.id)
             view.findNavController().navigate(R.id.action_homeFragment_to_noteDetailsFragment,bundle)
         }
+    }
+
+    private var lastPosition = -1
+
+
+    private fun setFadeAnimation(view: View) {
+        val anim = AlphaAnimation(0.0f, 1.0f)
+        anim.duration = FADE_DURATION.toLong()
+        view.startAnimation(anim)
+    }
+
+    private fun setScaleAnimation(view: View) {
+        val anim = ScaleAnimation(
+            0.0f,
+            1.0f,
+            0.0f,
+            1.0f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f
+        )
+        anim.duration = FADE_DURATION.toLong()/2
+        view.startAnimation(anim)
     }
 }
