@@ -1,0 +1,96 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionBarStyle">@style/ToolBarTheme</item>
+        <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="ToolBarTheme">
+        <item name="android:background">@color/material_color_white</item>
+        <item name="android:color">@color/colorBlack</item>
+        <item name="android:textSize">@dimen/toolbar_font_size</item>
+        <item name="android:textStyle">bold</item>
+
+    </style>
+
+    <style name="ToolBarThemeNoBg">
+        <item name="android:background">@null</item>
+    </style>
+
+
+    <attr name="cardStyle" format="reference" />
+
+    <style name="Light" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:background">@color/material_color_red_500</item>
+    </style>
+
+    <style name="Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:background">@color/material_color_red_500</item>
+    </style>
+
+    <style name="text_style" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Theme.AppCompat.Light.NoActionBar.UnFullScreen" parent="@style/Theme.AppCompat.Light">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="colorAccent">@color/colorWhiteGrey</item>
+        <item name="android:windowBackground">@color/colorWhite</item>
+    </style>
+
+    <style name="Theme.AppCompat.Light.NoActionBar.FullScreen" parent="@style/Theme.AppCompat.Light">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/colorWhiteGrey</item>
+        <item name="colorControlActivated">@color/colorWhiteGrey</item>
+        <item name="colorAccent">@color/colorWhiteGrey</item>
+        <item name="android:textCursorDrawable">@drawable/color_black</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.Blue" parent="AppTheme.NoActionBar">
+
+        <item name="android:colorBackground">@color/colorPrimary</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:colorForeground">@color/colorWhite</item>
+        <item name="android:textColor">@color/colorWhite</item>
+
+
+
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <style name="fullScreeDialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+    </style>
+
+
+
+
+</resources>

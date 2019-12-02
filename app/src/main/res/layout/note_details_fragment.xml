@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:pikolo="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/note_details_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragment.NoteDetailsFragment"
+    android:background="@drawable/note_background"
+    android:backgroundTint="@color/colorWhite"
+    android:backgroundTintMode="multiply"
+    android:padding="10dp"
+    android:layout_margin="10dp">
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/note_title_layout_edit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/note_title_edt"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:ems="10"
+            android:hint="Note title"
+            android:inputType="text" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+>
+
+        <EditText
+            android:id="@+id/note_content_edt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/note_title_layout_edit"
+            android:ems="10"
+            android:lines="6"
+            android:hint="here you counld write your content you want to save"
+            android:inputType="textMultiLine"
+            android:gravity="center"
+            android:foregroundGravity="center"
+            />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/note_content_edt">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:foregroundGravity="center"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Periority"
+                android:textStyle="bold"
+                android:textSize="23sp"/>
+        <NumberPicker
+            android:id="@+id/periority_picker"
+            android:layout_width="90dp"
+            android:layout_height="70dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:foregroundGravity="center"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/background_color_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Background color"
+                android:textStyle="bold"
+                android:textSize="23sp"/>
+
+            <com.madrapps.pikolo.RGBColorPicker
+                android:id="@+id/colorPicker"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                pikolo:blue_indicator_stroke_width="0dp"
+                pikolo:arc_length="110"
+                pikolo:red_start_angle="30"
+                pikolo:blue_start_angle="270"
+                pikolo:radius_offset="20dp"
+                pikolo:stroke_color="@color/colorWhite"
+                pikolo:stroke_width="1dp"
+                pikolo:green_start_angle="150"
+                tools:layout_constraintBottom_creator="1"
+                tools:layout_constraintLeft_creator="1"
+                tools:layout_constraintRight_creator="1"
+                tools:layout_constraintTop_creator="1" />
+
+            <com.skydoves.colorpickerview.ColorPickerView
+                android:visibility="gone"
+                android:id="@+id/ColorPickerView"
+                android:layout_width="90dp"
+                android:layout_height="70dp"
+                android:soundEffectsEnabled="true"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
