@@ -17,10 +17,10 @@ class NoteDetailsFragment : Fragment() , View.OnClickListener{
 
     private lateinit var viewModel: NoteDetailsViewModel
 
-    var item_id : Int=0;
+    var item_id : String = "";
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.getInt("item_id",0)?.let {
+        arguments?.getString("item_id","")?.let {
             item_id = it
         }
         setHasOptionsMenu(true);
@@ -43,7 +43,7 @@ class NoteDetailsFragment : Fragment() , View.OnClickListener{
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (item_id != 0)
+        if (item_id.isEmpty())
             inflater.inflate(R.menu.update_menu,menu)
         else
             inflater.inflate(R.menu.add_menu,menu)
@@ -52,7 +52,6 @@ class NoteDetailsFragment : Fragment() , View.OnClickListener{
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         viewModel.onOptionsItemSelected(item)
-
         return false
     }
 

@@ -10,6 +10,7 @@
         <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:fontFamily">@font/sfcompactdisplay_medium</item>
     </style>
 
     <!-- Base application theme. -->
@@ -18,7 +19,9 @@
         <item name="android:color">@color/colorBlack</item>
         <item name="android:textSize">@dimen/toolbar_font_size</item>
         <item name="android:textStyle">bold</item>
-
+        <item name="android:gravity">center</item>
+        <item name="android:foregroundGravity">center</item>
+        <item name="android:layout_gravity">center</item>
     </style>
 
     <style name="ToolBarThemeNoBg">

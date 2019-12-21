@@ -15,6 +15,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import codes.walid4444.notes.Helper.SharedPrefManger
 import codes.walid4444.notes.R
+import com.wang.avi.AVLoadingIndicatorView
 import kotlinx.android.synthetic.main.splash_fragment.*
 
 class SplashViewModel : ViewModel() {
@@ -22,7 +23,7 @@ class SplashViewModel : ViewModel() {
     private var mContext :Context? =null;
     private var navController : NavController? = null;
 
-    fun init (mContext : Context?, enter_app_btn : Button,enter_login_textview : TextView , loading_progress_bar : ProgressBar, splash_screen_layout : ViewGroup, view : View?){
+    fun init (mContext : Context?, enter_app_btn : Button,enter_login_textview : TextView , loading_progress_bar : AVLoadingIndicatorView, splash_screen_layout : ViewGroup, view : View?){
         this.mContext = mContext;
         this.navController = Navigation.findNavController(view!!);
 

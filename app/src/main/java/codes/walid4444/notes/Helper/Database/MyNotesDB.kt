@@ -9,11 +9,12 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import codes.walid4444.notes.Helper.Database.Dao.NoteDao
 import codes.walid4444.notes.Helper.Database.Model.Note
+import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 
 @Database(
     entities = [Note::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class MyNotesDB : RoomDatabase() {
@@ -24,11 +25,13 @@ abstract class MyNotesDB : RoomDatabase() {
         override fun doInBackground(vararg params: Void?): Void? {
             noteDao.insert(
                 Note(
+                    FirebaseFirestore.getInstance()!!.collection("notes").id,
                     "Welcome to MyNotes",
                     "Welcome to Our New Note Application",
                     1,
                     Date().time,
-                    "#FFFFFF"
+                    "#FFFFFF",
+                    ""
                 )
             )
             return null

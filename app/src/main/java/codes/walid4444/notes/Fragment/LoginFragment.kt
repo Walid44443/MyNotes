@@ -32,6 +32,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
         viewModel.init(view!!,email_edt,password_edt,confrim_login_btn,register_account_btn)
         confrim_login_btn.setOnClickListener(this)
         register_account_btn.setOnClickListener(this)
+        skip_txv.setOnClickListener(this)
 
     }
 

@@ -10,16 +10,18 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import codes.walid4444.notes.Helper.FireStore.FireStoreUtility
+import codes.walid4444.notes.Helper.FireStore.callback.RegisterUser
 import codes.walid4444.notes.R
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
+
 
 class RegisterViewModel : ViewModel() {
     lateinit var mContext: Context;
     var mAuth = FirebaseAuth.getInstance()
-    lateinit var mDatabase : DatabaseReference
+    lateinit var mDatabase : FirebaseFirestore
 
     private var navController : NavController? = null;
     private lateinit var emailTxt : EditText;
@@ -35,22 +37,28 @@ class RegisterViewModel : ViewModel() {
         this.nameTxt = nameTxt
         this.confirm_register_btn = confirm_register_btn
 
-        mDatabase = FirebaseDatabase.getInstance().getReference("Names")
+        mDatabase = FirebaseFirestore.getInstance()!!;
     }
 
     private fun registerUser (emailTxt : EditText ,passwordTxt : EditText ,nameTxt : EditText) {
         var email = emailTxt.text.toString()
         var password = passwordTxt.text.toString()
         var name = nameTxt.text.toString()
-
+        var fireStoreUtility : FireStoreUtility = FireStoreUtility()
         if (!email.isEmpty() && !password.isEmpty() && !name.isEmpty()) {
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(mContext as Activity, OnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val user = mAuth.currentUser
                     val uid = user!!.uid
-                    mDatabase.child(uid).child("Name").setValue(name)
-                    navController!!.navigate(R.id.action_registerFragment_to_loginFragment)
-                    Toast.makeText(mContext, "Successfully registered :)", Toast.LENGTH_LONG).show()
+                    fireStoreUtility.registerNewUser(name,email,uid,object : RegisterUser{
+                        override fun onSuccess(isSuccess: Boolean) {
+                            if (isSuccess){
+                                navController!!.navigate(R.id.action_registerFragment_to_loginFragment)
+                                Toast.makeText(mContext, "Successfully registered :)", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    })
+
                 }else {
                     Toast.makeText(mContext, "Error registering, try again later :(", Toast.LENGTH_LONG).show()
                     Log.e("Firebase",task.exception.toString())

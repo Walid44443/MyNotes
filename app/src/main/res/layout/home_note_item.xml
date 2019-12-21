@@ -9,7 +9,10 @@
     android:backgroundTint="@color/colorAccent"
     android:backgroundTintMode="multiply"
     android:background="@drawable/note_background"
-    android:layout_margin="5dp">
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_margin="5dp"
+    android:foreground="?android:attr/selectableItemBackground">
 
 
     <TextView
@@ -20,7 +23,8 @@
         android:layout_marginEnd="8dp"
         android:gravity="center"
         android:foregroundGravity="center"
-        android:text="Title "
+        android:text="عنوان "
+        android:fontFamily="@font/meltix_bold_demo"
         android:textColor="@color/material_color_black"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -38,7 +42,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="32dp"
-        android:text="Text"
+        android:fontFamily="@font/sfcompactdisplay_regular"
+        android:text="تجربة محتوي عربي"
         android:gravity="center"
         android:foregroundGravity="center"
         android:textColor="@color/material_color_black"
@@ -55,6 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="8/2/2019"
+        android:fontFamily="@font/meltix_light_demo"
         android:textColor="@color/material_color_black"
         android:textSize="18sp"
         android:gravity="center"
@@ -63,4 +69,41 @@
         app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <LinearLayout
+        android:id="@+id/selected_layout"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/note_card_bg_selected"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"
+        android:foregroundGravity="center"
+        android:padding="20dp"
+        android:alpha="0.9">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_checked"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24dp"
+            android:text="Selected"
+            android:fontFamily="@font/meltix_bold_demo"
+            android:textColor="@color/colorWhite"
+            android:shadowDy="1"
+            android:shadowDx="0"
+            android:shadowRadius="10"
+            android:shadowColor="@color/material_color_black"/>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

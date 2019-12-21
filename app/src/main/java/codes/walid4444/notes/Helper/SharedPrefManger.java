@@ -6,15 +6,10 @@ import android.preference.PreferenceManager;
 
 public class SharedPrefManger {
 
-    private Context mContext;
-    private String email;
-    private String password;
-    private String mToken;
     private static SharedPreferences mSharedPref;
 
 
     public SharedPrefManger(Context mContext) {
-        this.mContext = mContext;
         if (mSharedPref == null)
             mSharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
     }
@@ -24,6 +19,12 @@ public class SharedPrefManger {
         setPassword(password);
         setmToken(mToken);
     }
+    public void Logout(){
+        setEmail("");
+        setPassword("");
+        setmToken("");
+    }
+
 
     public boolean isLoggedIn(){
         return !getmToken().isEmpty();

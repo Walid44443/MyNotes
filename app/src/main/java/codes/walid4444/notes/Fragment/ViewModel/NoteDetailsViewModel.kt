@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.net.ConnectivityManager
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -18,12 +19,17 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import codes.walid4444.notes.Helper.Database.Model.Callbacks.NoteCallBack
 import codes.walid4444.notes.Helper.Database.Model.Note
+import codes.walid4444.notes.Helper.FireStore.FireStoreUtility
+import codes.walid4444.notes.Helper.FireStore.callback.onSaveNote
+import codes.walid4444.notes.Helper.FireStore.callback.onUpdate
 import codes.walid4444.notes.Helper.NoteRepository
+import codes.walid4444.notes.Helper.SharedPrefManger
 import codes.walid4444.notes.Helper.Utility
 import codes.walid4444.notes.R
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.FirebaseApp
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.madrapps.pikolo.ColorPicker
 import com.madrapps.pikolo.listeners.SimpleColorSelectionListener
 import com.skydoves.colorpickerview.ColorPickerDialog
@@ -42,7 +48,9 @@ class NoteDetailsViewModel : ViewModel() {
     lateinit var repository :NoteRepository;
     lateinit var note_details_layout : ConstraintLayout;
     private var navController : NavController? = null;
-    private  var item_id : Int =0;
+    private lateinit var item_id : String ;
+    private lateinit var userEmail : String;
+    var fireStoreUtility = FireStoreUtility();
 
     //Random Colors would be default assigned to color pick
     var colorList  = arrayOf(
@@ -66,9 +74,8 @@ class NoteDetailsViewModel : ViewModel() {
         "#e74c3c".toUpperCase()
     )
 
-
-    lateinit var db_ref  : DatabaseReference
-    fun Init(v : View ,note_details_layout : ConstraintLayout ,colorPickerView : ColorPicker,note_title_edt : EditText , note_content_edt : EditText, numberPicker: NumberPicker,item_id : Int){
+    lateinit var sharedPrefManger : SharedPrefManger;
+    fun Init(v : View ,note_details_layout : ConstraintLayout ,colorPickerView : ColorPicker,note_title_edt : EditText , note_content_edt : EditText, numberPicker: NumberPicker,item_id : String){
         mContext = v.context
         repository = NoteRepository(mContext)
         this.navController = Navigation.findNavController(v!!);
@@ -80,7 +87,11 @@ class NoteDetailsViewModel : ViewModel() {
         this.numberPicker = numberPicker;
         this.note_details_layout =note_details_layout;
 
-        db_ref = FirebaseDatabase.getInstance()!!.getReference("Notes");
+        sharedPrefManger = SharedPrefManger(mContext)
+        if (sharedPrefManger.isLoggedIn)
+            this.userEmail = sharedPrefManger.email;
+        else
+            this.userEmail = "";
 
         repository.getNote(item_id, object : NoteCallBack {
             override fun onSuccess(noteLiveData: LiveData<Note>) {
@@ -105,7 +116,7 @@ class NoteDetailsViewModel : ViewModel() {
         numberPicker.minValue = 0;
         numberPicker.maxValue = 5;
 
-        if (::noteLiveItem.isInitialized && item_id!=0){
+        if (::noteLiveItem.isInitialized && !item_id.isEmpty()){
                 noteLiveItem.observe(mContext as LifecycleOwner, androidx.lifecycle.Observer {
                     if (it !=null) {
                         note_title_edt.setText(it.title);
@@ -161,12 +172,43 @@ class NoteDetailsViewModel : ViewModel() {
             return;
         }
 
-        var note : Note = Note(title,content,periority,Date().time,noteColorStr)
-        repository.insert(note)
-        var FirebaseID : String = db_ref.push().key!!
-        note.owner = ""
-        db_ref.child(FirebaseID).setValue(note)
+        var note = Note(title,content,periority,Date().time,noteColorStr,userEmail)
 
+        //check network availability and if user is already login to insert into online firestore database
+        if (verifyAvailableNetwork(mContext as Activity) && sharedPrefManger.isLoggedIn)
+            saveFireStore(fireStoreUtility, note)
+        else {
+            note.id = ""
+            completeRoomSave(note)
+        }
+    }
+
+    private fun saveFireStore(
+        fireStoreUtility: FireStoreUtility,
+        note: Note
+    ) {
+        fireStoreUtility.insertNote(note, object : onSaveNote {
+            override fun onSuccess(fireStoreID: String) {
+                note.id = fireStoreID;
+                completeRoomSave(note)
+
+            }
+
+            override fun onError(errorMsg: String) {
+                Log.e("NoteDetailsViewModel","save error : "+errorMsg)
+                Toast.makeText(mContext,errorMsg,Toast.LENGTH_LONG);
+                completeRoomSave(note)
+
+            }
+        })
+    }
+
+    private fun completeRoomSave(note: Note) {
+        if (note.id.isEmpty()) {
+            note.id = FirebaseFirestore.getInstance()!!.collection("notes").document().id
+            Toast.makeText(mContext,"Field to sync online ,Check connection",Toast.LENGTH_SHORT).show()
+        }
+        repository.insert(note)
         navController!!.navigate(R.id.action_noteDetailsFragment_to_homeFragment)
     }
 
@@ -182,19 +224,30 @@ class NoteDetailsViewModel : ViewModel() {
             return;
         }
 
-
-        var note : Note = Note(title,content,periority,Date().time,noteColorStr)
+        var note : Note = Note(title,content,periority,Date().time,noteColorStr,userEmail)
         note.id = id
         repository.update(note)
+        if (sharedPrefManger.isLoggedIn)
+            fireStoreUtility.updateNote(note,object : onUpdate{
+                override fun onSuccess(isSuccess: Boolean) {
+                    when(isSuccess){
+                        true -> return;
+                        false-> Toast.makeText(mContext,"Field to sync note with server, try it later",Toast.LENGTH_SHORT).show()
+                    }
+                }
+            });
         navController!!.navigate(R.id.action_noteDetailsFragment_to_homeFragment)
     }
 
     fun DeleteNote(){
         var id = item_id
 
-        var note : Note = Note("","",0,5,"")
+        var note : Note = Note("","",0,5,"","")
         note.id =id
+
         repository.delete(note)
+        if (sharedPrefManger.isLoggedIn)
+            fireStoreUtility.deleteNote(note)
         navController!!.navigate(R.id.action_noteDetailsFragment_to_homeFragment)
     }
     fun onClick(v: View?) {
@@ -216,5 +269,20 @@ class NoteDetailsViewModel : ViewModel() {
                     .show()
             }
         }
+    }
+
+
+    private fun sync() {
+        if (verifyAvailableNetwork(mContext as Activity) != true) {
+            Toast.makeText(mContext, "Syncing failed !! No internet", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(mContext, "Syncing , will take few seconds", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun verifyAvailableNetwork(activity:Activity):Boolean{
+        val connectivityManager=activity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo=connectivityManager.activeNetworkInfo
+        return  networkInfo!=null && networkInfo.isConnected
     }
 }

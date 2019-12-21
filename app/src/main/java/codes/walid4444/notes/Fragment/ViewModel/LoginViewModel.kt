@@ -2,6 +2,7 @@ package codes.walid4444.notes.Fragment.ViewModel
 
 import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -9,6 +10,8 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import codes.walid4444.notes.BuildConfig
+import codes.walid4444.notes.Helper.FireStore.FireStoreUtility
 import codes.walid4444.notes.Helper.SharedPrefManger
 import codes.walid4444.notes.R
 import com.google.android.gms.tasks.OnCompleteListener
@@ -33,6 +36,11 @@ class LoginViewModel : ViewModel() {
         this.passwordTxt = passwordTxt
         this.confrim_login_btn = confrim_login_btn
         this.register_account_btn = register_account_btn
+
+        if (BuildConfig.DEBUG){
+            this.emailTxt.setText("midoma4444@gmail.com")
+            this.passwordTxt.setText("22222222")
+        }
     }
 
     private fun login(emailTxt: EditText, passwordTxt: EditText) {
@@ -48,6 +56,7 @@ class LoginViewModel : ViewModel() {
                             mAuth.getCurrentUser()!!.getIdToken(true).addOnCompleteListener {
                                 sharedPrefManger.Login(email,password,it.getResult()!!.token)
                             }
+                            downloadSavedNotes(email)
 
                             navController!!.navigate(R.id.action_loginFragment_to_homeFragment)
                             Toast.makeText(mContext, "Successfully Logged in :)", Toast.LENGTH_LONG)
@@ -67,6 +76,12 @@ class LoginViewModel : ViewModel() {
         when(view!!.id){
             R.id.confrim_login_btn-> login(emailTxt,passwordTxt)
             R.id.register_account_btn -> navController!!.navigate(R.id.action_loginFragment_to_registerFragment)
+            R.id.skip_txv -> navController!!.navigate(R.id.action_loginFragment_to_homeFragment)
         }
+    }
+
+    fun downloadSavedNotes(email : String){
+        var fireStoreUtility : FireStoreUtility = FireStoreUtility()
+        fireStoreUtility.getNotes(email,mContext)
     }
 }

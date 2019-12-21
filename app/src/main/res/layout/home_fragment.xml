@@ -19,6 +19,38 @@
         android:layoutAnimation="@anim/layout_animation"
         tools:listitem="@layout/home_note_item" />
 
+    <LinearLayout
+        android:id="@+id/note_items_layout"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="30dp"
+        android:alpha=".7"
+        android:foregroundGravity="center">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:src="@drawable/ic_no_data"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="30dp"
+            android:layout_gravity="center"
+            android:gravity="clip_vertical|center_horizontal"
+            android:fontFamily="@font/meltix_bold_demo"
+            android:layout_weight="1"
+            android:text="You don't have any notes current now , you can start adding notes"
+            />
+
+    </LinearLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_float_btn"
         android:layout_width="wrap_content"

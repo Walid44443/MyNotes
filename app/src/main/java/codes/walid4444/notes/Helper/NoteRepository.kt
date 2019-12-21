@@ -1,8 +1,11 @@
 package codes.walid4444.notes.Helper
 
+import android.app.Activity
 import android.content.Context
 import android.os.AsyncTask
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.paging.DataSource
 import codes.walid4444.notes.Helper.Database.Dao.NoteDao
 import codes.walid4444.notes.Helper.Database.Model.Callbacks.NoteCallBack
@@ -22,8 +25,11 @@ class NoteRepository(mContext: Context) {
         PagedNotes = noteDao.getAllPaged()
     }
 
-    fun getNote(id : Int, noteCallBack: NoteCallBack) {
-        Thread(Runnable { noteCallBack.onSuccess(noteDao.getNote(id)!!) }).start()
+    fun getNote(id : String, noteCallBack: NoteCallBack) {
+        Thread(Runnable {
+            noteCallBack.onSuccess(noteDao.getNote(id)!!)
+        }
+        ).start()
     }
 
     fun insert(note: Note?) {
@@ -41,10 +47,39 @@ class NoteRepository(mContext: Context) {
         DeleteAllNoteAsyncTask(noteDao).execute()
     }
 
+    lateinit var observable : Observer<Note>;
+    fun SyncNotes(noteList: List<Note>,mContext: Context){
+        for (note in noteList){
+            getNote(note.id,object : NoteCallBack{
+                override fun onSuccess(noteLive: LiveData<Note>) {
+                    (mContext as Activity).runOnUiThread( Runnable {
+                        observable =  Observer<Note> (){
+
+                            if (it !=null) {
+                                if (note.last_modify > it.last_modify)
+                                    update(note)
+                            }else
+                                insert(note)
+                        }
+                        noteLive.observeOnce(mContext as LifecycleOwner,observable );
+                    })
+                }
+            })
+        }
+    }
+
+    fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+        observe(lifecycleOwner, object : Observer<T> {
+            override fun onChanged(t: T?) {
+                observer.onChanged(t)
+                removeObserver(this)
+            }
+        })
+    }
 
     private class getNoteAsyncTask(private val noteDao: NoteDao) :
-        AsyncTask<Int, Void?, LiveData<Note>?>() {
-        override fun doInBackground(vararg params: Int?): LiveData<Note>? {
+        AsyncTask<String, Void?, LiveData<Note>?>() {
+        override fun doInBackground(vararg params: String?): LiveData<Note>? {
             return  noteDao.getNote(params[0]!!)
         }
     }

@@ -23,7 +23,7 @@ interface NoteDao {
     val notes: LiveData<List<Note>>?
 
     @Query("SELECT * from Note WHERE id = :id")
-    fun getNote(id : Int) :  LiveData<Note>?
+    fun getNote(id : String) :  LiveData<Note>?
 
     @Query("SELECT * FROM Note ORDER BY priority,last_modify ASC")
     fun getAllPaged() : DataSource.Factory<Int, Note>
